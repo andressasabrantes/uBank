@@ -141,6 +141,7 @@ CREATE TABLE emprestimo(
 	quantidade_parcelas TINYINT NOT NULL,
 	valor_parcela MONEY NOT NULL,
 	fechamento_parcela DATETIME NOT NULL,
+	data_pagamento DATETIME,
 	usuario_cadastro INT NOT NULL,
 	data_cadastro DATETIME NOT NULL,
 	usuario_ultima_alteracao INT,

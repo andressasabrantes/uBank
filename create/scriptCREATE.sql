@@ -1,6 +1,5 @@
-CREATE DATABASE ubank;
-USE ubank;
-drop database ubank;
+CREATE DATABASE Banco;
+USE Banco;
 
 CREATE TABLE tipo_usuario(
 	id TINYINT PRIMARY KEY,
@@ -23,9 +22,9 @@ CREATE TABLE usuario(
 
 CREATE TABLE cliente(
 	id INT PRIMARY KEY IDENTITY,
-	nome VARCHAR(60) NOT NULL,
-	sobrenome VARCHAR(100) NOT NULL,
-	CPF BIGINT UNIQUE NOT NULL,
+	nome VARCHAR(60),
+	sobrenome VARCHAR(100),
+	CPF BIGINT NOT NULL UNIQUE,
 	data_nascimento DATETIME NOT NULL,
 	usuario_cadastro INT NOT NULL,
 	data_cadastro DATETIME NOT NULL,
@@ -74,12 +73,12 @@ CREATE TABLE contato(
 	id_tipo_contato TINYINT NOT NULL,
 	numero BIGINT NOT NULL,
 	whatsapp BIT NOT NULL,
-	usuario_cadastro INT NOT NULL, 
+	usuario_cadastro INT NOT NULL,
 	data_cadastro DATETIME NOT NULL,
 	usuario_ultima_alteracao INT,
 	data_ultima_alteracao DATETIME,
 	CONSTRAINT fk_contato_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(id),
-	CONSTRAINT fk_contato_tipo_contato FOREIGN KEY (id_tipo_contato) REFERENCES tipo_contato(id)
+	CONSTRAINT fk_endereco_tipo_contato FOREIGN KEY (id_tipo_contato) REFERENCES tipo_contato(id)
 );
 
 CREATE TABLE tipo_conta(
@@ -91,14 +90,7 @@ CREATE TABLE tipo_conta(
 
 CREATE TABLE status(
 	id TINYINT PRIMARY KEY,
-	descricao VARCHAR(20) NOT NULL
-);
-
-CREATE TABLE tipo_movimentacao(
-	id TINYINT PRIMARY KEY, 
-	descricao VARCHAR(50) NOT NULL,
-	usuario_cadastro INT NOT NULL,
-	data_cadastro DATETIME NOT NULL
+	descricao VARCHAR(20)
 );
 
 CREATE TABLE conta(
@@ -108,15 +100,37 @@ CREATE TABLE conta(
 	id_tipo_conta TINYINT NOT NULL,
 	saldo MONEY NOT NULL,
 	agencia SMALLINT NOT NULL,
-	numero_conta INT NOT NULL,
+	numero_conta INT NOT NULL UNIQUE,
 	emprestimos_quitados SMALLINT NOT NULL,
 	usuario_cadastro INT NOT NULL,
 	data_cadastro DATETIME NOT NULL,
 	usuario_ultima_alteracao INT,
-	data_ultima_alteracao DATETIME, 
+	data_ultima_alteracao DATETIME,
 	CONSTRAINT fk_conta_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(id),
 	CONSTRAINT fk_conta_status FOREIGN KEY (id_status) REFERENCES status(id),
 	CONSTRAINT fk_conta_tipo_conta FOREIGN KEY (id_tipo_conta) REFERENCES tipo_conta(id)
+);
+
+CREATE TABLE emprestimo(
+	id INT PRIMARY KEY IDENTITY,
+	id_conta INT NOT NULL,
+	valor MONEY NOT NULL,
+	quantidade_parcelas TINYINT NOT NULL,
+	valor_parcela MONEY NOT NULL,
+	fechamento_parcela DATE NOT NULL,
+	data_pagamento DATE DEFAULT(NULL),
+	usuario_cadastro INT NOT NULL,
+	data_cadastro DATETIME NOT NULL,
+	usuario_ultima_alteracao INT,
+	data_ultima_alteracao DATETIME,
+	CONSTRAINT fk_emprestimo_conta FOREIGN KEY (id_conta) REFERENCES conta(id)
+);
+
+CREATE TABLE tipo_movimentacao(
+	id TINYINT PRIMARY KEY,
+	descricao VARCHAR(20),
+	usuario_cadastro INT NOT NULL,
+	data_cadastro DATETIME NOT NULL
 );
 
 CREATE TABLE extrato(
@@ -132,19 +146,4 @@ CREATE TABLE extrato(
 	data_ultima_alteracao DATETIME,
 	CONSTRAINT fk_extrato_conta FOREIGN KEY (id_conta) REFERENCES conta(id),
 	CONSTRAINT fk_extrato_tipo_movimentacao FOREIGN KEY (id_tipo_movimentacao) REFERENCES tipo_movimentacao(id)
-);
-
-CREATE TABLE emprestimo(
-	id INT PRIMARY KEY IDENTITY,
-	id_conta INT NOT NULL,
-	valor MONEY NOT NULL,
-	quantidade_parcelas TINYINT NOT NULL,
-	valor_parcela MONEY NOT NULL,
-	fechamento_parcela DATETIME NOT NULL,
-	data_pagamento DATETIME,
-	usuario_cadastro INT NOT NULL,
-	data_cadastro DATETIME NOT NULL,
-	usuario_ultima_alteracao INT,
-	data_ultima_alteracao DATETIME,
-	CONSTRAINT fk_emprestimo_conta FOREIGN KEY (id_conta) REFERENCES conta(id)
 );

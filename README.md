@@ -5,4 +5,5 @@ Cronograma com sprints detalhadas,
 Histórias de Usuários,
 Casos de Uso,
 Database Design,
-Banco de Dados em SQL Server.
+Banco de Dados em SQL Server,
+e documentação.
